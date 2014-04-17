@@ -14,7 +14,8 @@
         appFiles:[
             'src/GameLayer.js',     //add your own files in order here
             'src/Stickman.js',
-            'src/Woman.js'
+            'src/Woman.js',
+            'src/Block.js'
         ]
     };
 

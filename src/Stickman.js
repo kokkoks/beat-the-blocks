@@ -5,8 +5,7 @@ var Stickman = cc.Sprite.extend({
 
 		this.direction = Stickman.DIR.STILL;
 		this.movement = Stickman.MOV.STILL;
-		this.movingAction  = this.createAnimationAction();
-		this.runAction(this.movingAction);
+		this.standMove();
 	}, setDirection: function( dir ){
 		this.direction = dir;
 	}, setMovement: function( mov ){
@@ -14,13 +13,16 @@ var Stickman = cc.Sprite.extend({
 	}, flipPicture: function( dir ){
 		if(dir == Stickman.DIR.RIGHT){
 			this.setFlippedX(false);
+			console.log( 'right' );
 		}
 		else{
-			console.log('fuck this shit')
 			this.setFlippedX(true);
+			console.log( 'left' );
 		}
-	}, createAnimationAction: function(){
-		this.stopAllActions();
+	}, standMove: function() {
+		this.movingAction = this.createAnimationAction();
+		this.runAction(this.movingAction);
+	}, createAnimationAction: function() {
 		var animation = new cc.Animation.create();
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing1.png' );
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing2.png' );
@@ -29,7 +31,7 @@ var Stickman = cc.Sprite.extend({
 		console.log( animation.getDelayPerUnit() );
 		animation.setDelayPerUnit( 0.1 );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
-	}, attackMove: function(movement){
+	}, attackMove: function( movement ) {
 		this.stopAllActions();
 		if(movement == Stickman.MOV.HIGH){
 			this.movingAction = this.highAttackMove();
@@ -39,7 +41,7 @@ var Stickman = cc.Sprite.extend({
 			this.movingAction = this.lowAttackMove();
 			this.runAction( this.movingAction );
 		}
-	}, highAttackMove: function(){
+	}, highAttackMove: function() {
 		var animation = new cc.Animation.create();
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick1.png' );
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick2.png' );
@@ -47,6 +49,7 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick4.png' );
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick5.png' );
 		animation.setDelayPerUnit( 0.1 );
+		console.log( 'high' );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}, lowAttackMove: function(){
 		var animation = new cc.Animation.create();
@@ -56,15 +59,10 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick4.png' );
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick5.png' );
 		animation.setDelayPerUnit( 0.1 );
+		console.log( 'low' );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
-	}, update: function(dt){
-		if(this.movement == Stickman.MOV.STILL){
-			this.stopAllActions();
-			this.movingAction = this.createAnimationAction();
-			this.runAction(this.movingAction);
-		}
 	}
-})
+});
 Stickman.DIR = {
 	STILL: 0,
 	LEFT: 1,
@@ -76,4 +74,3 @@ Stickman.MOV = {
 	HIGH: 1,
 	LOW: 2,
 };
-// this.setflippedX(1);
