@@ -19,7 +19,8 @@
             'src/Heart.js',
             'src/Gauge.js',
             'src/UltimateBar.js',
-            'src/Meat.js'
+            'src/Meat.js',
+            'src/Energy.js'
         ]
     };
 
