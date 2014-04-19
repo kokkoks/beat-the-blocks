@@ -1,5 +1,3 @@
-var blocks = [];
-var keyPressed = false;
 var GameLayer = cc.LayerColor.extend({
     init: function() {
         this._super( new cc.Color4B( 127, 127, 127, 255 ) );
@@ -9,7 +7,9 @@ var GameLayer = cc.LayerColor.extend({
         this.stickman.setPosition(new cc.Point( screenWidth/2, screenHeight/2))
         this.addChild(this.stickman);
 
-        this.schedule( this.generateBlock, 3);
+        this.initLife();
+        this.initGauge();
+        this.schedule( this.generateBlock, sec);
 
         this.scheduleUpdate();
         // this.stickman.scheduleUpdate();
@@ -20,7 +20,14 @@ var GameLayer = cc.LayerColor.extend({
         this.setKeyboardEnabled(true);
         return true;
     }, generateBlock: function() {
-        var randomBlock = Math.floor( Math.random() * 4 );
+        var randomPos = Math.floor( Math.random() * 4 );
+        var randomMeat = Math.floor( Math.random() * 4 );
+
+        if( randomMeat == 1){
+            this.manageMeat( randomPos );
+        }
+        else this.manageBlock( randomPos );
+    }, manageBlock: function( randomBlock ) {
         if( randomBlock == 0 ) {
             this.createBlock( 0, screenHeight/2 + 20, Block.NAME.BLOCK1 );
         } else if( randomBlock == 1 ) {
@@ -30,6 +37,16 @@ var GameLayer = cc.LayerColor.extend({
         } else {
             this.createBlock( screenWidth, screenHeight/2 - 50, Block.NAME.BLOCK4 );
         }
+    }, manageMeat: function( randomMeat ) {
+        if( randomMeat == 0 ){
+            this.createMeat( 0, screenHeight/2 + 20, Meat.NAME.MEAT1 );
+        } else if( randomMeat == 1 ) {
+            this.createMeat( 0, screenHeight/2 -50, Meat.NAME.MEAT2 );
+        } else if( randomMeat == 2 ) {
+            this.createMeat( screenWidth, screenHeight/2 + 20, Meat.NAME.MEAT3 );
+        } else {
+            this.createMeat( screenWidth, screenHeight/2 - 50, Meat.NAME.MEAT4 );
+        }
     }, createBlock: function( positionX, positionY, name) {
         this.block = new Block();
         this.block.setPosition( new cc.Point( positionX, positionY ) );
@@ -37,13 +54,96 @@ var GameLayer = cc.LayerColor.extend({
         blocks.push( this.block );
         this.block.setName( name );
         this.block.scheduleUpdate();
+    }, createMeat: function( positionX, positionY, name) {
+        this.meat = new Meat();
+        this.meat.setPosition( new cc.Point( positionX, positionY ) );
+        this.addChild( this.meat );
+        meats.push( this.meat );
+        this.meat.setName( name );
+        this.meat.scheduleUpdate();
+    }, initLife: function() {
+        for(var i = 0; i < 5; i++ ) {
+            lifes[i] = new Heart();
+        }
+        this.showLife();
+    }, initGauge: function() {
+        this.ultimateBar = new UltimateBar();
+        this.ultimateBar.setPosition( new cc.Point( screenWidth - 165, screenHeight - 30 ) );
+        this.addChild( this.ultimateBar );
+        this.showGauge();
+    }, showGauge: function() {
+        for( var i = 0; i < 5; i++ ) {
+            this.gauge = new Gauge();
+            this.gauge.setPosition( new cc.Point( screenWidth - (i * 60 + 45 ), screenHeight - 30 ) );
+            this.addChild( this.gauge );
+        }
+    }, showLife: function() {
+        for( var i = 0; i < lifes.length; i++ ) {
+            lifes[i].setPosition( new cc.Point( i * 55 + 30, screenHeight - 30 ) );
+            this.addChild( lifes[i] );
+        }
+    }, increaseLife: function( quantity ) {
+        if( life < 7 ){
+            for( var i = life; i < life + quantity; i++ ) {
+                this.heart = new Heart();
+                this.heart.setPosition( new cc.Point( i * 55 + 30, screenHeight - 30 ) );
+                this.addChild( this.heart );
+                lifes.push( this.heart );
+                console.log( i )
+            }
+        life += quantity;
+        }
+    }, decreaseLife: function( quantity ) {
+        this.removeChild( lifes[life-1] );
+        lifes.splice( life - 1, 1);
+        life -= quantity;
+    }, removeBlock: function( i ) {
+        this.removeChild( blocks[i] );
+        blocks.splice( i, 1 );
+    }, removeMeat: function( i ) {
+        this.removeChild( meats[i] );
+        meats.splice( i, 1 );
     }, update:function() {
-        for( var i = 0; i < blocks.length; i++){
-            if( blocks[i].getPositionX() < 0 || blocks[i].getPositionX() > screenWidth ){
-                this.removeChild(blocks[i]);
-                blocks.splice( i, 1 );
+        this.checkBlock();
+        this.checkMeat();
+    }, checkMeat: function(){
+        for( var i = 0; i < meats.length; i++ ){
+            if( meats[i].getPositionX() < 0 || meats[i].getPositionX() > screenWidth ) {
+                this.removeMeat( i );
+            }
+            if( meats[i].hit( this.stickman ) ){
+                if( meats[i].checkAction( this.stickman ) ) {
+                    this.removeMeat( i );
+                    this.increaseLife( 1 );
+                }
+                else {
+                    this.removeMeat( i );
+                }
             }
         }
+    }, checkBlock: function(){
+        for( var i = 0; i < blocks.length; i++ ) {
+            if( blocks[i].getPositionX() < 0 || blocks[i].getPositionX() > screenWidth ){
+                this.removeBlock( i );
+            }
+            else if( blocks[i].hit( this.stickman ) ) {
+                if( blocks[i].checkAction( this.stickman ) ) {
+                    this.removeBlock( i );
+                    console.log( 'true');
+                }
+                else {
+                    if( life == 0 );
+                    else {
+                        this.decreaseLife( 1 );
+                        this.removeBlock( i );
+                    }
+                    // this.endGame();
+                }
+            }
+        }
+    }, endGame: function() {
+        console.log('fuck this')
+        exit( 0 );
     }, onKeyDown: function( e ) {
         if( keyPressed == false ) {
             switch( e ) {
@@ -90,3 +190,12 @@ var StartScene = cc.Scene.extend({
     }
 });
 
+var meats = [];
+var blocks = [];
+var sec = 3;
+var level = 1;
+var lifes = [];
+var life  = 5;
+var gauges = [];
+var ulti = 0;
+var keyPressed = false;

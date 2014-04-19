@@ -15,7 +15,11 @@
             'src/GameLayer.js',     //add your own files in order here
             'src/Stickman.js',
             'src/Woman.js',
-            'src/Block.js'
+            'src/Block.js',
+            'src/Heart.js',
+            'src/Gauge.js',
+            'src/UltimateBar.js',
+            'src/Meat.js'
         ]
     };
 

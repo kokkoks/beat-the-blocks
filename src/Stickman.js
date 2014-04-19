@@ -1,11 +1,12 @@
 var Stickman = cc.Sprite.extend({
 	ctor: function(){
 		this._super();
+
+		this.standMove();
 		this.initWithFile("res/images/standing.png");
 
 		this.direction = Stickman.DIR.STILL;
 		this.movement = Stickman.MOV.STILL;
-		this.standMove();
 	}, setDirection: function( dir ){
 		this.direction = dir;
 	}, setMovement: function( mov ){
@@ -13,22 +14,19 @@ var Stickman = cc.Sprite.extend({
 	}, flipPicture: function( dir ){
 		if(dir == Stickman.DIR.RIGHT){
 			this.setFlippedX(false);
-			console.log( 'right' );
 		}
 		else{
 			this.setFlippedX(true);
-			console.log( 'left' );
 		}
 	}, standMove: function() {
 		this.movingAction = this.createAnimationAction();
-		this.runAction(this.movingAction);
+		this.runAction( this.movingAction );
 	}, createAnimationAction: function() {
 		var animation = new cc.Animation.create();
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing1.png' );
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing2.png' );
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing3.png' );
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing4.png' );
-		console.log( animation.getDelayPerUnit() );
 		animation.setDelayPerUnit( 0.1 );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}, attackMove: function( movement ) {
@@ -49,7 +47,6 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick4.png' );
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick5.png' );
 		animation.setDelayPerUnit( 0.1 );
-		console.log( 'high' );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}, lowAttackMove: function(){
 		var animation = new cc.Animation.create();
@@ -59,7 +56,6 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick4.png' );
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick5.png' );
 		animation.setDelayPerUnit( 0.1 );
-		console.log( 'low' );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}
 });
