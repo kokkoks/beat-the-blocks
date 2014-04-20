@@ -135,6 +135,14 @@ var GameLayer = cc.LayerColor.extend({
             if( gauges[i].getPositionX() < 0 || gauges[i].getPositionX() > screenWidth ) {
                 this.removeEnergy( i );
             }
+            if( gauges[i].hit( this.stickman ) ){
+                if( gauges[i].checkAction( this.stickman ) ) {
+                    this.removeEnergy( i );
+                }
+                else {
+                    this.removeEnergy( i );
+                }
+            }
         }
     }, checkMeat: function(){
         for( var i = 0; i < meats.length; i++ ){
