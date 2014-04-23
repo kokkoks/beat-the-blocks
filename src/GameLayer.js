@@ -9,7 +9,7 @@ var GameLayer = cc.LayerColor.extend({
 
         this.initLife();
         this.initGauge();
-        this.schedule( this.generateBlock, sec);
+        this.schedule( this.generateItems, sec);
 
         this.scheduleUpdate();
         // this.stickman.scheduleUpdate();
@@ -19,16 +19,15 @@ var GameLayer = cc.LayerColor.extend({
 
         this.setKeyboardEnabled(true);
         return true;
-    }, generateBlock: function() {
+    }, generateItems: function() {
         var randomPos = Math.floor( Math.random() * 4 );
-        var randomMeat = Math.floor( Math.random() * 4 );
-        var randomEnergy = Math.floor( Math.random() *1 );
+        var randomItem = Math.floor( Math.random() * 6 );
 
-        this.manageEnergy( randomPos );
-        if( randomMeat == 1){
+        if( randomItem == 1){
             this.manageMeat( randomPos );
-        }
-        else this.manageBlock( randomPos );
+        } else if( randomItem == 2 ) {
+            this.manageEnergy( randomPos );
+        } else this.manageBlock( randomPos );
     }, manageEnergy: function( randomPos) {
         if( randomPos == 0 ){
             this.createEnergy( 0, screenHeight/2 + 20, Energy.NAME.ENERGY1 );
@@ -63,7 +62,7 @@ var GameLayer = cc.LayerColor.extend({
         this.energy = new Energy();
         this.energy.setPosition( new cc.Point( positionX, positionY ) );
         this.addChild( this.energy );
-        gauges.push( this.energy );
+        energys.push( this.energy );
         this.energy.setName( name );
         this.energy.scheduleUpdate();
     }, createBlock: function( positionX, positionY, name) {
@@ -116,6 +115,16 @@ var GameLayer = cc.LayerColor.extend({
         this.removeChild( lifes[life-1] );
         lifes.splice( life - 1, 1);
         life -= quantity;
+    }, increaseGauge: function( quantity ) {
+        if( ulti < 5 ){
+            for( var i = ulti; i < ulti + quantity; i++ ) {
+                this.gauge = new Gauge();
+                this.gauge.setPosition( new cc.Point( screenWidth - (i * 60 + 45 ), screenHeight - 30 ) );
+                this.addChild( this.gauge );
+                gauges.push( this.gauge );
+            }
+        ulti += quantity;
+        }
     }, removeBlock: function( i ) {
         this.removeChild( blocks[i] );
         blocks.splice( i, 1 );
@@ -123,21 +132,21 @@ var GameLayer = cc.LayerColor.extend({
         this.removeChild( meats[i] );
         meats.splice( i, 1 );
     }, removeEnergy: function( i ) {
-        this.removeChild( gauges[i] );
-        gauges.splice( i, 1 );
+        this.removeChild( energys[i] );
+        energys.splice( i, 1 );
     }, update:function() {
         this.checkBlock();
         this.checkMeat();
         this.checkEnergy();
     }, checkEnergy: function() {
-        console.log( gauges.length );
-        for( var i = 0; i < gauges.length; i++ ){
-            if( gauges[i].getPositionX() < 0 || gauges[i].getPositionX() > screenWidth ) {
+        for( var i = 0; i < energys.length; i++ ){
+            if( energys[i].getPositionX() < 0 || energys[i].getPositionX() > screenWidth ) {
                 this.removeEnergy( i );
             }
-            if( gauges[i].hit( this.stickman ) ){
-                if( gauges[i].checkAction( this.stickman ) ) {
+            if( energys[i].hit( this.stickman ) ){
+                if( energys[i].checkAction( this.stickman ) ) {
                     this.removeEnergy( i );
+                    this.increaseGauge( 1 );
                 }
                 else {
                     this.removeEnergy( i );
@@ -167,7 +176,6 @@ var GameLayer = cc.LayerColor.extend({
             else if( blocks[i].hit( this.stickman ) ) {
                 if( blocks[i].checkAction( this.stickman ) ) {
                     this.removeBlock( i );
-                    console.log( 'true');
                 }
                 else {
                     if( life == 0 );
@@ -181,7 +189,7 @@ var GameLayer = cc.LayerColor.extend({
         }
     }, endGame: function() {
         console.log('fuck this')
-        exit( 0 );
+        exit( 0 );f 
     }, onKeyDown: function( e ) {
         if( keyPressed == false ) {
             switch( e ) {
@@ -209,6 +217,13 @@ var GameLayer = cc.LayerColor.extend({
                         this.keyPressed = true;
                     } 
                     break;
+                case cc.KEY.z:
+                    if( this.stickman.movement == Stickman.MOV.STILL ) {
+                        this.stickman.setMovement( Stickman.MOV.ULTIMATE );
+                        this.stickman.attackMove( Stickman.MOV.ULTIMATE );
+                        this.keyPressed = true;
+                    }
+                    break;
             }
         }
     }, onKeyUp: function( e ){
@@ -232,7 +247,8 @@ var meats = [];
 var blocks = [];
 var lifes = [];
 var gauges = [];
-var sec = 3;
+var energys = [];
+var sec = 1;
 var level = 1;
 var life  = 5;
 var ulti = 0;

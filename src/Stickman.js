@@ -2,8 +2,8 @@ var Stickman = cc.Sprite.extend({
 	ctor: function(){
 		this._super();
 
-		this.standMove();
 		this.initWithFile("res/images/standing.png");
+		this.standMove();
 
 		this.direction = Stickman.DIR.STILL;
 		this.movement = Stickman.MOV.STILL;
@@ -31,12 +31,16 @@ var Stickman = cc.Sprite.extend({
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}, attackMove: function( movement ) {
 		this.stopAllActions();
-		if(movement == Stickman.MOV.HIGH){
+		if( movement == Stickman.MOV.HIGH ){
 			this.movingAction = this.highAttackMove();
 			this.runAction( this.movingAction );
 		}
-		else if(movement == Stickman.MOV.LOW){
+		else if( movement == Stickman.MOV.LOW ){
 			this.movingAction = this.lowAttackMove();
+			this.runAction( this.movingAction );
+		} 
+		else if( movement == Stickman.MOV.ULTIMATE ) {
+			this.movingAction = this.finalMove();
 			this.runAction( this.movingAction );
 		}
 	}, highAttackMove: function() {
@@ -57,6 +61,15 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick5.png' );
 		animation.setDelayPerUnit( 0.1 );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
+	}, finalMove: function() {
+		var animation = new cc.Animation.create();
+		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick1.png' );
+		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick2.png' );
+		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick3.png' );
+		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick4.png' );
+		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick5.png' );
+		animation.setDelayPerUnit( 0.1 );
+		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}
 });
 Stickman.DIR = {
@@ -69,4 +82,5 @@ Stickman.MOV = {
 	STILL: 0,
 	HIGH: 1,
 	LOW: 2,
+	ULTIMATE: 3,
 };
