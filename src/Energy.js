@@ -3,36 +3,52 @@ var Energy = cc.Sprite.extend( {
 		this._super();
 		this.initWithFile( "res/images/energy.png" );
 		this.name = Energy.NAME.ENERGY0;
-	}, setName: function( name ) {
+	},
+
+	setName: function( name ) {
 		this.name = name;
-	},update: function( dt ) {
-		if( this.name == Energy.NAME.ENERGY1 ){
+	},
+
+	update: function( dt ) {
+		if ( this.name == Energy.NAME.ENERGY1 ){
 			this.setPositionX( this.getPositionX() + 3 );
-		} else if( this.name == Energy.NAME.ENERGY2 ){
+		}
+		else if ( this.name == Energy.NAME.ENERGY2 ){
 			this.setPositionX( this.getPositionX() + 3 );
-		} else if( this.name == Energy.NAME.ENERGY3 ){
-			this.setPositionX( this.getPositionX() - 3 );
-		} else {
+		}
+		else if ( this.name == Energy.NAME.ENERGY3 ){
 			this.setPositionX( this.getPositionX() - 3 );
 		}
-	}, hit: function( player ) {
+		else {
+			this.setPositionX( this.getPositionX() - 3 );
+		}
+	},
+
+	hit: function( player ) {
 		var energy = this.getPosition();
-		var stickman = player.getPosition();
+		var stickman = player.getPosition();	
 		
 		return this.checkCollision( energy, stickman );
-	}, checkCollision: function( energy, stickman ) {
+	},
+
+	checkCollision: function( energy, stickman ) {
 		return ( ( Math.abs( energy.x - stickman.x ) <= 80 ) );
-	}, checkAction: function( player ) {
-		if( this.name == Energy.NAME.ENERGY1 ){
+	},
+
+	checkAction: function( player ) {
+		if ( this.name == Energy.NAME.ENERGY1 ){
 			return player.direction == Stickman.DIR.LEFT && 
 					player.movement == Stickman.MOV.HIGH
-		} else if( this.name == Energy.NAME.ENERGY2 ){
+		}
+		else if ( this.name == Energy.NAME.ENERGY2 ){
 			return player.direction == Stickman.DIR.LEFT && 
 					player.movement == Stickman.MOV.LOW
-		} else if( this.name == Energy.NAME.ENERGY3 ){
+		}
+		else if ( this.name == Energy.NAME.ENERGY3 ){
 			return player.direction == Stickman.DIR.RIGHT && 
 					player.movement == Stickman.MOV.HIGH
-		} else {
+		}
+		else {
 			return player.direction == Stickman.DIR.RIGHT && 
 					player.movement == Stickman.MOV.LOW
 		}
@@ -45,4 +61,4 @@ Energy.NAME = {
 	ENERGY2: 2,
 	ENERGY3: 3,
 	ENERGY4: 4,
-};
+}; 

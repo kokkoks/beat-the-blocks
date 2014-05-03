@@ -3,36 +3,52 @@ var Block = cc.Sprite.extend( {
 		this._super();
 		this.initWithFile( "res/images/stone.png" );
 		this.name = Block.NAME.BLOCK0;
-	}, update: function( dt ) {
+	},
+
+	update: function( dt ) {
 		if( this.name == Block.NAME.BLOCK1 ){
 			this.setPositionX( this.getPositionX() + 3 );
-		} else if( this.name == Block.NAME.BLOCK2 ){
+		}
+		else if ( this.name == Block.NAME.BLOCK2 ){
 			this.setPositionX( this.getPositionX() + 3 );
-		} else if( this.name == Block.NAME.BLOCK3 ){
-			this.setPositionX( this.getPositionX() - 3 );
-		} else {
+		}
+		else if ( this.name == Block.NAME.BLOCK3 ){
 			this.setPositionX( this.getPositionX() - 3 );
 		}
-	}, setName: function( name ) {
+		else {
+			this.setPositionX( this.getPositionX() - 3 );
+		}
+	}, 
+
+	setName: function( name ) {
 		this.name = name;
-	}, hit: function( player ) {
+	},
+
+	hit: function( player ) {
 		var block = this.getPosition();
 		var stickman = player.getPosition();
 		
 		return this.checkCollision( block, stickman );
-	}, checkCollision: function( block, stickman ) {
+	},
+
+	checkCollision: function( block, stickman ) {
 		return ( ( Math.abs( block.x - stickman.x ) <= 80 ) );
-	}, checkAction: function( player ) {
-		if( this.name == Block.NAME.BLOCK1 ){
+	},
+
+	checkAction: function( player ) {
+		if ( this.name == Block.NAME.BLOCK1 ){
 			return player.direction == Stickman.DIR.LEFT && 
 					player.movement == Stickman.MOV.HIGH
-		} else if( this.name == Block.NAME.BLOCK2 ){
+		}
+		else if ( this.name == Block.NAME.BLOCK2 ){
 			return player.direction == Stickman.DIR.LEFT && 
 					player.movement == Stickman.MOV.LOW
-		} else if( this.name == Block.NAME.BLOCK3 ){
+		}
+		else if ( this.name == Block.NAME.BLOCK3 ){
 			return player.direction == Stickman.DIR.RIGHT && 
 					player.movement == Stickman.MOV.HIGH
-		} else {
+		}
+		else {
 			return player.direction == Stickman.DIR.RIGHT && 
 					player.movement == Stickman.MOV.LOW
 		}

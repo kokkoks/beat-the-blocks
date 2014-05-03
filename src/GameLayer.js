@@ -19,90 +19,126 @@ var GameLayer = cc.LayerColor.extend({
 
         this.setKeyboardEnabled(true);
         return true;
-    }, generateItems: function() {
+    }, 
+
+    generateItems: function() {
+
         var randomPos = Math.floor( Math.random() * 4 );
         var randomItem = Math.floor( Math.random() * 6 );
 
-        if( randomItem == 1){
+        if ( randomItem == 1){
             this.manageMeat( randomPos );
-        } else if( randomItem == 2 ) {
+        }
+        else if ( randomItem == 2 ) {
             this.manageEnergy( randomPos );
-        } else this.manageBlock( randomPos );
-    }, manageEnergy: function( randomPos) {
-        if( randomPos == 0 ){
+        }
+        else this.manageBlock( randomPos );
+    }, 
+
+    manageEnergy: function( randomPos) {
+        if ( randomPos == 0 ){
             this.createEnergy( 0, screenHeight/2 + 20, Energy.NAME.ENERGY1 );
-        } else if( randomPos == 1 ) {
+        }
+        else if ( randomPos == 1 ) {
             this.createEnergy( 0, screenHeight/2 -50, Energy.NAME.ENERGY2 );
-        } else if( randomPos == 2 ) {
+        }
+        else if ( randomPos == 2 ) {
             this.createEnergy( screenWidth, screenHeight/2 + 20, Energy.NAME.ENERGY3 );
-        } else {
+        }
+        else {
             this.createEnergy( screenWidth, screenHeight/2 - 50, Energy.NAME.ENERGY4 );
         }
-    }, manageBlock: function( randomPos ) {
-        if( randomPos == 0 ) {
+    }, 
+
+    manageBlock: function( randomPos ) {
+        if ( randomPos == 0 ) {
             this.createBlock( 0, screenHeight/2 + 20, Block.NAME.BLOCK1 );
-        } else if( randomPos == 1 ) {
+        }
+        else if ( randomPos == 1 ) {
             this.createBlock( 0, screenHeight/2 -50, Block.NAME.BLOCK2 );
-        } else if( randomPos == 2 ) {
+        }
+        else if ( randomPos == 2 ) {
             this.createBlock( screenWidth, screenHeight/2 + 20, Block.NAME.BLOCK3 );
-        } else {
+        }
+        else {
             this.createBlock( screenWidth, screenHeight/2 - 50, Block.NAME.BLOCK4 );
         }
-    }, manageMeat: function( randomPos ) {
-        if( randomPos == 0 ){
+    }, 
+
+    manageMeat: function( randomPos ) {
+        if ( randomPos == 0 ){
             this.createMeat( 0, screenHeight/2 + 20, Meat.NAME.MEAT1 );
-        } else if( randomPos == 1 ) {
+        }
+        else if ( randomPos == 1 ) {
             this.createMeat( 0, screenHeight/2 -50, Meat.NAME.MEAT2 );
-        } else if( randomPos == 2 ) {
+        }
+        else if ( randomPos == 2 ) {
             this.createMeat( screenWidth, screenHeight/2 + 20, Meat.NAME.MEAT3 );
-        } else {
+        }
+        else {
             this.createMeat( screenWidth, screenHeight/2 - 50, Meat.NAME.MEAT4 );
         }
-    }, createEnergy: function( positionX, positionY, name) {
+    }, 
+
+    createEnergy: function( positionX, positionY, name) {
         this.energy = new Energy();
         this.energy.setPosition( new cc.Point( positionX, positionY ) );
         this.addChild( this.energy );
         energys.push( this.energy );
         this.energy.setName( name );
         this.energy.scheduleUpdate();
-    }, createBlock: function( positionX, positionY, name) {
+    }, 
+
+    createBlock: function( positionX, positionY, name) {
         this.block = new Block();
         this.block.setPosition( new cc.Point( positionX, positionY ) );
         this.addChild( this.block );
         blocks.push( this.block );
         this.block.setName( name );
         this.block.scheduleUpdate();
-    }, createMeat: function( positionX, positionY, name) {
+    }, 
+
+    createMeat: function( positionX, positionY, name) {
         this.meat = new Meat();
         this.meat.setPosition( new cc.Point( positionX, positionY ) );
         this.addChild( this.meat );
         meats.push( this.meat );
         this.meat.setName( name );
         this.meat.scheduleUpdate();
-    }, initLife: function() {
-        for(var i = 0; i < 5; i++ ) {
+    }, 
+
+    initLife: function() {
+        for (var i = 0; i < 5; i++ ) {
             lifes[i] = new Heart();
         }
         this.showLife();
-    }, initGauge: function() {
+    }, 
+
+    initGauge: function() {
         this.ultimateBar = new UltimateBar();
         this.ultimateBar.setPosition( new cc.Point( screenWidth - 165, screenHeight - 30 ) );
         this.addChild( this.ultimateBar );
         // this.showGauge();
-    }, showGauge: function() {
-        for( var i = 0; i < 5; i++ ) {
+    }, 
+
+    showGauge: function() {
+        for ( var i = 0; i < 5; i++ ) {
             this.gauge = new Gauge();
             this.gauge.setPosition( new cc.Point( screenWidth - (i * 60 + 45 ), screenHeight - 30 ) );
             this.addChild( this.gauge );
         }
-    }, showLife: function() {
-        for( var i = 0; i < lifes.length; i++ ) {
+    }, 
+
+    showLife: function() {
+        for ( var i = 0; i < lifes.length; i++ ) {
             lifes[i].setPosition( new cc.Point( i * 55 + 30, screenHeight - 30 ) );
             this.addChild( lifes[i] );
         }
-    }, increaseLife: function( quantity ) {
-        if( life < 7 ){
-            for( var i = life; i < life + quantity; i++ ) {
+    }, 
+
+    increaseLife: function( quantity ) {
+        if ( life < 7 ){
+            for ( var i = life; i < life + quantity; i++ ) {
                 this.heart = new Heart();
                 this.heart.setPosition( new cc.Point( i * 55 + 30, screenHeight - 30 ) );
                 this.addChild( this.heart );
@@ -111,13 +147,17 @@ var GameLayer = cc.LayerColor.extend({
             }
         life += quantity;
         }
-    }, decreaseLife: function( quantity ) {
+    }, 
+
+    decreaseLife: function( quantity ) {
         this.removeChild( lifes[life-1] );
         lifes.splice( life - 1, 1);
         life -= quantity;
-    }, increaseGauge: function( quantity ) {
-        if( ulti < 5 ){
-            for( var i = ulti; i < ulti + quantity; i++ ) {
+    }, 
+
+    increaseGauge: function( quantity ) {
+        if ( ulti < 5 ){
+            for ( var i = ulti; i < ulti + quantity; i++ ) {
                 this.gauge = new Gauge();
                 this.gauge.setPosition( new cc.Point( screenWidth - (i * 60 + 45 ), screenHeight - 30 ) );
                 this.addChild( this.gauge );
@@ -125,26 +165,36 @@ var GameLayer = cc.LayerColor.extend({
             }
         ulti += quantity;
         }
-    }, removeBlock: function( i ) {
+    }, 
+
+    removeBlock: function( i ) {
         this.removeChild( blocks[i] );
         blocks.splice( i, 1 );
-    }, removeMeat: function( i ) {
+    },
+
+    removeMeat: function( i ) {
         this.removeChild( meats[i] );
         meats.splice( i, 1 );
-    }, removeEnergy: function( i ) {
+    },
+
+    removeEnergy: function( i ) {
         this.removeChild( energys[i] );
         energys.splice( i, 1 );
-    }, update:function() {
+    },
+
+    update:function() {
         this.checkBlock();
         this.checkMeat();
         this.checkEnergy();
-    }, checkEnergy: function() {
-        for( var i = 0; i < energys.length; i++ ){
-            if( energys[i].getPositionX() < 0 || energys[i].getPositionX() > screenWidth ) {
+    },
+
+    checkEnergy: function() {
+        for ( var i = 0; i < energys.length; i++ ){
+            if ( energys[i].getPositionX() < 0 || energys[i].getPositionX() > screenWidth ) {
                 this.removeEnergy( i );
             }
-            if( energys[i].hit( this.stickman ) ){
-                if( energys[i].checkAction( this.stickman ) ) {
+            if ( energys[i].hit( this.stickman ) ){
+                if ( energys[i].checkAction( this.stickman ) ) {
                     this.removeEnergy( i );
                     this.increaseGauge( 1 );
                 }
@@ -153,13 +203,15 @@ var GameLayer = cc.LayerColor.extend({
                 }
             }
         }
-    }, checkMeat: function(){
-        for( var i = 0; i < meats.length; i++ ){
-            if( meats[i].getPositionX() < 0 || meats[i].getPositionX() > screenWidth ) {
+    },
+
+    checkMeat: function(){
+        for ( var i = 0; i < meats.length; i++ ){
+            if ( meats[i].getPositionX() < 0 || meats[i].getPositionX() > screenWidth ) {
                 this.removeMeat( i );
             }
-            if( meats[i].hit( this.stickman ) ){
-                if( meats[i].checkAction( this.stickman ) ) {
+            if ( meats[i].hit( this.stickman ) ){
+                if ( meats[i].checkAction( this.stickman ) ) {
                     this.removeMeat( i );
                     this.increaseLife( 1 );
                 }
@@ -168,17 +220,19 @@ var GameLayer = cc.LayerColor.extend({
                 }
             }
         }
-    }, checkBlock: function(){
-        for( var i = 0; i < blocks.length; i++ ) {
-            if( blocks[i].getPositionX() < 0 || blocks[i].getPositionX() > screenWidth ){
+    }, 
+
+    checkBlock: function(){
+        for ( var i = 0; i < blocks.length; i++ ) {
+            if ( blocks[i].getPositionX() < 0 || blocks[i].getPositionX() > screenWidth ){
                 this.removeBlock( i );
             }
-            else if( blocks[i].hit( this.stickman ) ) {
-                if( blocks[i].checkAction( this.stickman ) ) {
+            else if ( blocks[i].hit( this.stickman ) ) {
+                if ( blocks[i].checkAction( this.stickman ) ) {
                     this.removeBlock( i );
                 }
                 else {
-                    if( life == 0 );
+                    if ( life == 0 );
                     else {
                         this.decreaseLife( 1 );
                         this.removeBlock( i );
@@ -187,10 +241,14 @@ var GameLayer = cc.LayerColor.extend({
                 }
             }
         }
-    }, endGame: function() {
+    },
+
+    endGame: function() {
         console.log('fuck this')
         exit( 0 );f 
-    }, onKeyDown: function( e ) {
+    },
+
+    onKeyDown: function( e ) {
         if( keyPressed == false ) {
             switch( e ) {
                 case cc.KEY.left:
@@ -226,7 +284,9 @@ var GameLayer = cc.LayerColor.extend({
                     break;
             }
         }
-    }, onKeyUp: function( e ){
+    },
+
+    onKeyUp: function( e ){
         this.stickman.stopAllActions();
         this.stickman.setMovement( Stickman.DIR.STILL );
         this.stickman.standMove();
@@ -248,7 +308,7 @@ var blocks = [];
 var lifes = [];
 var gauges = [];
 var energys = [];
-var sec = 1;
+var sec = 1.5;
 var level = 1;
 var life  = 5;
 var ulti = 0;
