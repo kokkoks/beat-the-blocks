@@ -17,6 +17,7 @@ var GameLayer = cc.LayerColor.extend({
         // this.woman.setPosition(new cc.Point( 470, 250))
         // this.addChild(this.woman);
 
+
         this.setKeyboardEnabled(true);
         return true;
     }, 
@@ -167,6 +168,14 @@ var GameLayer = cc.LayerColor.extend({
         }
     }, 
 
+    decreaseGauge: function() {
+        for ( var i = 4; i >= 0; i-- ){
+            this.removeChild( gauges[i] );
+            gauges.splice( i ,1 );
+        }
+        ulti = 0;
+    },
+    
     removeBlock: function( i ) {
         this.removeChild( blocks[i] );
         blocks.splice( i, 1 );
@@ -183,17 +192,24 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     update:function() {
-        this.checkBlock();
-        this.checkMeat();
-        this.checkEnergy();
+        if ( this.stickman.movement ==  Stickman.MOV.ULTIMATE ){
+            this.checkBlock( 200 );
+            this.checkMeat( 200 );
+            this.checkEnergy( 200 );
+        }
+        else {
+            this.checkBlock( 80 );
+            this.checkMeat( 80 );
+            this.checkEnergy( 80 );
+        }
     },
 
-    checkEnergy: function() {
+    checkEnergy: function( distance ) {
         for ( var i = 0; i < energys.length; i++ ){
             if ( energys[i].getPositionX() < 0 || energys[i].getPositionX() > screenWidth ) {
                 this.removeEnergy( i );
             }
-            if ( energys[i].hit( this.stickman ) ){
+            if ( energys[i].hit( this.stickman, distance ) ){
                 if ( energys[i].checkAction( this.stickman ) ) {
                     this.removeEnergy( i );
                     this.increaseGauge( 1 );
@@ -205,12 +221,12 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
 
-    checkMeat: function(){
+    checkMeat: function( distance ){
         for ( var i = 0; i < meats.length; i++ ){
             if ( meats[i].getPositionX() < 0 || meats[i].getPositionX() > screenWidth ) {
                 this.removeMeat( i );
             }
-            if ( meats[i].hit( this.stickman ) ){
+            if ( meats[i].hit( this.stickman, distance ) ){
                 if ( meats[i].checkAction( this.stickman ) ) {
                     this.removeMeat( i );
                     this.increaseLife( 1 );
@@ -222,12 +238,12 @@ var GameLayer = cc.LayerColor.extend({
         }
     }, 
 
-    checkBlock: function(){
+    checkBlock: function( distance ){
         for ( var i = 0; i < blocks.length; i++ ) {
             if ( blocks[i].getPositionX() < 0 || blocks[i].getPositionX() > screenWidth ){
                 this.removeBlock( i );
             }
-            else if ( blocks[i].hit( this.stickman ) ) {
+            else if ( blocks[i].hit( this.stickman, distance ) ) {
                 if ( blocks[i].checkAction( this.stickman ) ) {
                     this.removeBlock( i );
                 }
@@ -249,7 +265,7 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     onKeyDown: function( e ) {
-        if( keyPressed == false ) {
+        if ( keyPressed == false ) {
             switch( e ) {
                 case cc.KEY.left:
                     this.stickman.setDirection( Stickman.DIR.LEFT );
@@ -262,26 +278,29 @@ var GameLayer = cc.LayerColor.extend({
                     this.keyPressed = true;
                     break;
                 case cc.KEY.x:
-                    if( this.stickman.movement == Stickman.MOV.STILL ) {
+                    if ( this.stickman.movement == Stickman.MOV.STILL ) {
                         this.stickman.setMovement( Stickman.MOV.HIGH );
                         this.stickman.attackMove( Stickman.MOV.HIGH );
                         this.keyPressed = true;
                     }
                     break;
                 case cc.KEY.c:
-                    if( this.stickman.movement == Stickman.MOV.STILL ) {
+                    if ( this.stickman.movement == Stickman.MOV.STILL ) {
                         this.stickman.setMovement( Stickman.MOV.LOW );
                         this.stickman.attackMove( Stickman.MOV.LOW );
                         this.keyPressed = true;
                     } 
                     break;
                 case cc.KEY.z:
-                    if( this.stickman.movement == Stickman.MOV.STILL ) {
-                        this.stickman.setMovement( Stickman.MOV.ULTIMATE );
-                        this.stickman.attackMove( Stickman.MOV.ULTIMATE );
-                        this.keyPressed = true;
+                    if ( ulti == 5 ) {
+                        if ( this.stickman.movement == Stickman.MOV.STILL ) {
+                            this.stickman.setMovement( Stickman.MOV.ULTIMATE );
+                            this.stickman.attackMove( Stickman.MOV.ULTIMATE );
+                            this.keyPressed = true;
+                        }
+                        this.decreaseGauge();
+                        break;
                     }
-                    break;
             }
         }
     },

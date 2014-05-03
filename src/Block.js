@@ -24,33 +24,38 @@ var Block = cc.Sprite.extend( {
 		this.name = name;
 	},
 
-	hit: function( player ) {
+	hit: function( player, distance ) {
 		var block = this.getPosition();
 		var stickman = player.getPosition();
 		
-		return this.checkCollision( block, stickman );
+		return this.checkCollision( block, stickman, distance );
 	},
 
-	checkCollision: function( block, stickman ) {
-		return ( ( Math.abs( block.x - stickman.x ) <= 80 ) );
+	checkCollision: function( block, stickman, distance ) {
+		return ( ( Math.abs( block.x - stickman.x ) <= distance ) );
 	},
 
 	checkAction: function( player ) {
-		if ( this.name == Block.NAME.BLOCK1 ){
-			return player.direction == Stickman.DIR.LEFT && 
-					player.movement == Stickman.MOV.HIGH
-		}
-		else if ( this.name == Block.NAME.BLOCK2 ){
-			return player.direction == Stickman.DIR.LEFT && 
-					player.movement == Stickman.MOV.LOW
-		}
-		else if ( this.name == Block.NAME.BLOCK3 ){
-			return player.direction == Stickman.DIR.RIGHT && 
-					player.movement == Stickman.MOV.HIGH
+		if ( player.movement == Stickman.MOV.ULTIMATE ){
+			return true;
 		}
 		else {
-			return player.direction == Stickman.DIR.RIGHT && 
-					player.movement == Stickman.MOV.LOW
+			if ( this.name == Block.NAME.BLOCK1 ){
+				return player.direction == Stickman.DIR.LEFT && 
+						player.movement == Stickman.MOV.HIGH
+			}
+			else if ( this.name == Block.NAME.BLOCK2 ){
+				return player.direction == Stickman.DIR.LEFT && 
+						player.movement == Stickman.MOV.LOW
+			}
+			else if ( this.name == Block.NAME.BLOCK3 ){
+				return player.direction == Stickman.DIR.RIGHT && 
+						player.movement == Stickman.MOV.HIGH
+			}
+			else {
+				return player.direction == Stickman.DIR.RIGHT && 
+						player.movement == Stickman.MOV.LOW
+			}
 		}
 	}
 } );

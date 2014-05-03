@@ -81,11 +81,7 @@ var Stickman = cc.Sprite.extend({
 
 	finalMove: function() {
 		var animation = new cc.Animation.create();
-		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick1.png' );
-		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick2.png' );
-		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick3.png' );
-		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick4.png' );
-		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick5.png' );
+		animation.addSpriteFrameWithFile( 'res/images/final_move.png' );
 		animation.setDelayPerUnit( 0.1 );
 		return cc.RepeatForever.create( cc.Animate.create( animation ));
 	}

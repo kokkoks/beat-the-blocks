@@ -24,15 +24,15 @@ var Meat = cc.Sprite.extend( {
 		}
 	},
 
-	hit: function( player ) {
+	hit: function( player, distance ) {
 		var meat = this.getPosition();
 		var stickman = player.getPosition();
 		
-		return this.checkCollision( meat, stickman );
+		return this.checkCollision( meat, stickman, distance );
 	},
 
-	checkCollision: function( meat, stickman ) {
-		return ( ( Math.abs( meat.x - stickman.x ) <= 80 ) );
+	checkCollision: function( meat, stickman, distance ) {
+		return ( ( Math.abs( meat.x - stickman.x ) <= distance ) );
 	}, 
 
 	checkAction: function( player ) {

@@ -24,33 +24,38 @@ var Energy = cc.Sprite.extend( {
 		}
 	},
 
-	hit: function( player ) {
+	hit: function( player, distance ) {
 		var energy = this.getPosition();
 		var stickman = player.getPosition();	
 		
-		return this.checkCollision( energy, stickman );
+		return this.checkCollision( energy, stickman, distance );
 	},
 
-	checkCollision: function( energy, stickman ) {
-		return ( ( Math.abs( energy.x - stickman.x ) <= 80 ) );
+	checkCollision: function( energy, stickman, distance ) {
+		return ( ( Math.abs( energy.x - stickman.x ) <= distance ) );
 	},
 
 	checkAction: function( player ) {
-		if ( this.name == Energy.NAME.ENERGY1 ){
-			return player.direction == Stickman.DIR.LEFT && 
-					player.movement == Stickman.MOV.HIGH
-		}
-		else if ( this.name == Energy.NAME.ENERGY2 ){
-			return player.direction == Stickman.DIR.LEFT && 
-					player.movement == Stickman.MOV.LOW
-		}
-		else if ( this.name == Energy.NAME.ENERGY3 ){
-			return player.direction == Stickman.DIR.RIGHT && 
-					player.movement == Stickman.MOV.HIGH
+		if ( player.movement == Stickman.MOV.ULTIMATE ){
+			return true;
 		}
 		else {
-			return player.direction == Stickman.DIR.RIGHT && 
-					player.movement == Stickman.MOV.LOW
+			if ( this.name == Energy.NAME.ENERGY1 ){
+				return player.direction == Stickman.DIR.LEFT && 
+						player.movement == Stickman.MOV.HIGH
+			}
+			else if ( this.name == Energy.NAME.ENERGY2 ){
+				return player.direction == Stickman.DIR.LEFT && 
+						player.movement == Stickman.MOV.LOW
+			}
+			else if ( this.name == Energy.NAME.ENERGY3 ){
+				return player.direction == Stickman.DIR.RIGHT && 
+						player.movement == Stickman.MOV.HIGH
+			}
+			else {
+				return player.direction == Stickman.DIR.RIGHT && 
+						player.movement == Stickman.MOV.LOW
+			}
 		}
 	}
 } );
