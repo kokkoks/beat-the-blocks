@@ -21,7 +21,8 @@
             'src/UltimateBar.js',
             'src/Meat.js',
             'src/Energy.js',
-            'src/BackGround.js'
+            'src/BackGround.js',
+            'src/Board'
         ]
     };
 

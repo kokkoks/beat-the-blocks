@@ -10,7 +10,7 @@ var GameLayer = cc.LayerColor.extend({
         this.stickman = new Stickman();
         this.stickman.setPosition(new cc.Point( screenWidth/2, screenHeight*1/3))
         this.addChild( this.stickman );
-    
+
         this.initLife();
         this.initGauge();
         this.schedule( this.levelUp, 15 )
@@ -52,6 +52,21 @@ var GameLayer = cc.LayerColor.extend({
         else this.manageBlock( randomPos );
     }, 
 
+    manageMeat: function( randomPos ) {
+        if ( randomPos == 0 ){
+            this.createMeat( 0, screenHeight*1/3 + 20, Meat.NAME.MEAT1 );
+        }
+        else if ( randomPos == 1 ) {
+            this.createMeat( 0, screenHeight*1/3 -50, Meat.NAME.MEAT2 );
+        }
+        else if ( randomPos == 2 ) {
+            this.createMeat( screenWidth, screenHeight*1/3 + 20, Meat.NAME.MEAT3 );
+        }
+        else {
+            this.createMeat( screenWidth, screenHeight*1/3 - 50, Meat.NAME.MEAT4 );
+        }
+    },
+
     manageEnergy: function( randomPos) {
         if ( randomPos == 0 ){
             this.createEnergy( 0, screenHeight*1/3 + 20, Energy.NAME.ENERGY1 );
@@ -65,7 +80,7 @@ var GameLayer = cc.LayerColor.extend({
         else {
             this.createEnergy( screenWidth, screenHeight*1/3 - 50, Energy.NAME.ENERGY4 );
         }
-    }, 
+    },
 
     manageBlock: function( randomPos ) {
         if ( randomPos == 0 ) {
@@ -82,20 +97,14 @@ var GameLayer = cc.LayerColor.extend({
         }
     }, 
 
-    manageMeat: function( randomPos ) {
-        if ( randomPos == 0 ){
-            this.createMeat( 0, screenHeight*1/3 + 20, Meat.NAME.MEAT1 );
-        }
-        else if ( randomPos == 1 ) {
-            this.createMeat( 0, screenHeight*1/3 -50, Meat.NAME.MEAT2 );
-        }
-        else if ( randomPos == 2 ) {
-            this.createMeat( screenWidth, screenHeight*1/3 + 20, Meat.NAME.MEAT3 );
-        }
-        else {
-            this.createMeat( screenWidth, screenHeight*1/3 - 50, Meat.NAME.MEAT4 );
-        }
-    }, 
+    createMeat: function( positionX, positionY, name) {
+        this.meat = new Meat();
+        this.meat.setPosition( new cc.Point( positionX, positionY ) );
+        this.addChild( this.meat );
+        meats.push( this.meat );
+        this.meat.setName( name );
+        this.meat.scheduleUpdate();
+    },
 
     createEnergy: function( positionX, positionY, name) {
         this.energy = new Energy();
@@ -115,14 +124,7 @@ var GameLayer = cc.LayerColor.extend({
         this.block.scheduleUpdate();
     }, 
 
-    createMeat: function( positionX, positionY, name) {
-        this.meat = new Meat();
-        this.meat.setPosition( new cc.Point( positionX, positionY ) );
-        this.addChild( this.meat );
-        meats.push( this.meat );
-        this.meat.setName( name );
-        this.meat.scheduleUpdate();
-    }, 
+     
 
     initLife: function() {
         for (var i = 0; i < 5; i++ ) {
@@ -231,6 +233,7 @@ var GameLayer = cc.LayerColor.extend({
             }
             if ( energys[i].hit( this.stickman, distance ) ){
                 if ( energys[i].checkAction( this.stickman ) ) {
+                    cc.AudioEngine.getInstance().playEffect( 'res/sound/pick_energy.mp3' );
                     this.removeEnergy( i );
                     this.increaseGauge( 1 );
                 }
@@ -248,6 +251,7 @@ var GameLayer = cc.LayerColor.extend({
             }
             if ( meats[i].hit( this.stickman, distance ) ){
                 if ( meats[i].checkAction( this.stickman ) ) {
+                    cc.AudioEngine.getInstance().playEffect( 'res/sound/eat.mp3' );
                     this.removeMeat( i );
                     this.increaseLife( 1 );
                 }
@@ -341,13 +345,14 @@ var StartScene = cc.Scene.extend({
     }
 });
 
-var meats = [];
-var blocks = [];
+
 var lifes = [];
+var meats = [];
 var gauges = [];
 var energys = [];
+var blocks = [];
+var ulti = 0;
+var life  = 5;
 var sec = 1.2;
 var level = 1;
-var life  = 5;
-var ulti = 0;
 var keyPressed = false;
