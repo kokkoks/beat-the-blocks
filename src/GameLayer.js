@@ -9,18 +9,29 @@ var GameLayer = cc.LayerColor.extend({
 
         this.initLife();
         this.initGauge();
+        this.schedule( this.levelUp, 5 )
         this.schedule( this.generateItems, sec);
 
-        this.scheduleUpdate();
-        // this.stickman.scheduleUpdate();
-        // this.woman = new Woman();
-        // this.woman.setPosition(new cc.Point( 470, 250))
-        // this.addChild(this.woman);
+        this.levelLabel = cc.LabelTTF.create( "Level " + level, "Arial", 50 );
+        this.levelLabel.setPosition( new cc.Point( screenWidth/2, screenHeight*3/4 ) );
+        this.addChild( this.levelLabel );
+        // cc.AudioEngine.getInstance().playEffect( 'res/sound/sound_background.mp3' , true);
 
+        this.scheduleUpdate();
 
         this.setKeyboardEnabled(true);
         return true;
     }, 
+
+    levelUp: function() {
+
+        if ( level >= 5) return;
+        this.getScheduler().unscheduleCallbackForTarget( this, this.generateItems );
+        level++;
+        sec -= 0.2;
+        this.updateLevelLabel();
+        this.schedule( this.generateItems, sec );
+    },
 
     generateItems: function() {
 
@@ -204,6 +215,10 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
 
+    updateLevelLabel:function() {
+        this.levelLabel.setString( "Level " + level );
+    },
+
     checkEnergy: function( distance ) {
         for ( var i = 0; i < energys.length; i++ ){
             if ( energys[i].getPositionX() < 0 || energys[i].getPositionX() > screenWidth ) {
@@ -245,10 +260,13 @@ var GameLayer = cc.LayerColor.extend({
             }
             else if ( blocks[i].hit( this.stickman, distance ) ) {
                 if ( blocks[i].checkAction( this.stickman ) ) {
+                    cc.AudioEngine.getInstance().playEffect( 'res/sound/soundpunch.mp3' );
                     this.removeBlock( i );
                 }
                 else {
-                    if ( life == 0 );
+                    if ( life == 0 ) {
+                        this.endGame();
+                    }
                     else {
                         this.decreaseLife( 1 );
                         this.removeBlock( i );
@@ -260,8 +278,9 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     endGame: function() {
-        console.log('fuck this')
-        exit( 0 );f 
+        if( confirm( ' YOU LOSE !' ) ) {
+            location.reload();
+        }
     },
 
     onKeyDown: function( e ) {
@@ -278,39 +297,35 @@ var GameLayer = cc.LayerColor.extend({
                     this.keyPressed = true;
                     break;
                 case cc.KEY.x:
-                    if ( this.stickman.movement == Stickman.MOV.STILL ) {
-                        this.stickman.setMovement( Stickman.MOV.HIGH );
-                        this.stickman.attackMove( Stickman.MOV.HIGH );
+                    if ( this.stickman.movement != Stickman.MOV.HIGH ) {
+                        this.scheduleOnce( function(){ 
+                        this.stickman.createMovement( Stickman.MOV.STILL ) }, 0.25 );
+                        this.stickman.createMovement( Stickman.MOV.HIGH );
                         this.keyPressed = true;
                     }
                     break;
                 case cc.KEY.c:
-                    if ( this.stickman.movement == Stickman.MOV.STILL ) {
-                        this.stickman.setMovement( Stickman.MOV.LOW );
-                        this.stickman.attackMove( Stickman.MOV.LOW );
+                    if ( this.stickman.movement != Stickman.MOV.LOW ) {
+                        this.scheduleOnce( function(){ 
+                        this.stickman.createMovement( Stickman.MOV.STILL ) }, 0.25 );
+                        this.stickman.createMovement( Stickman.MOV.LOW );
                         this.keyPressed = true;
-                    } 
+                    }
                     break;
                 case cc.KEY.z:
                     if ( ulti == 5 ) {
-                        if ( this.stickman.movement == Stickman.MOV.STILL ) {
-                            this.stickman.setMovement( Stickman.MOV.ULTIMATE );
-                            this.stickman.attackMove( Stickman.MOV.ULTIMATE );
-                            this.keyPressed = true;
+                        if ( this.stickman.movement != Stickman.MOV.ULTIMATE ) {
+                        this.scheduleOnce( function(){ 
+                        this.stickman.createMovement( Stickman.MOV.STILL ) }, 3 );
+                        this.stickman.createMovement( Stickman.MOV.ULTIMATE );
+                        this.keyPressed = true;
                         }
-                        this.decreaseGauge();
-                        break;
+                    this.decreaseGauge();
                     }
+                    break;
             }
         }
     },
-
-    onKeyUp: function( e ){
-        this.stickman.stopAllActions();
-        this.stickman.setMovement( Stickman.DIR.STILL );
-        this.stickman.standMove();
-        this.keyPressed = false;
-    }
 });
 
 var StartScene = cc.Scene.extend({
@@ -327,7 +342,7 @@ var blocks = [];
 var lifes = [];
 var gauges = [];
 var energys = [];
-var sec = 1.5;
+var sec = 1.2;
 var level = 1;
 var life  = 5;
 var ulti = 0;

@@ -5,18 +5,22 @@ var Block = cc.Sprite.extend( {
 		this.name = Block.NAME.BLOCK0;
 	},
 
+	setSpeed: function( speed ) {
+		this.speed = speed;
+	},
+
 	update: function( dt ) {
 		if( this.name == Block.NAME.BLOCK1 ){
-			this.setPositionX( this.getPositionX() + 3 );
+			this.setPositionX( this.getPositionX() + speed );
 		}
 		else if ( this.name == Block.NAME.BLOCK2 ){
-			this.setPositionX( this.getPositionX() + 3 );
+			this.setPositionX( this.getPositionX() + speed );
 		}
 		else if ( this.name == Block.NAME.BLOCK3 ){
-			this.setPositionX( this.getPositionX() - 3 );
+			this.setPositionX( this.getPositionX() - speed );
 		}
 		else {
-			this.setPositionX( this.getPositionX() - 3 );
+			this.setPositionX( this.getPositionX() - speed );
 		}
 	}, 
 
@@ -59,6 +63,8 @@ var Block = cc.Sprite.extend( {
 		}
 	}
 } );
+
+var speed = 3;
 
 Block.NAME = {
 	BLOCK0: 0,

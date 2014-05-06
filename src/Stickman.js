@@ -26,6 +26,11 @@ var Stickman = cc.Sprite.extend({
 		}
 	},
 
+	createMovement: function( mov ) {
+		this.setMovement( mov );
+		this.attackMove( mov );
+	},
+
 	standMove: function() {
 		this.movingAction = this.createAnimationAction();
 		this.runAction( this.movingAction );
@@ -38,7 +43,7 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing3.png' );
 		animation.addSpriteFrameWithFile( 'res/images/standing/standing4.png' );
 		animation.setDelayPerUnit( 0.1 );
-		return cc.RepeatForever.create( cc.Animate.create( animation ));
+		return cc.RepeatForever.create( cc.Animate.create( animation ) );
 	},
 
 	attackMove: function( movement ) {
@@ -54,6 +59,10 @@ var Stickman = cc.Sprite.extend({
 		else if ( movement == Stickman.MOV.ULTIMATE ) {
 			this.movingAction = this.finalMove();
 			this.runAction( this.movingAction );
+		} 
+		else {
+			this.movingAction = this.createAnimationAction();
+			this.runAction( this.movingAction );
 		}
 	},
 
@@ -61,11 +70,11 @@ var Stickman = cc.Sprite.extend({
 		var animation = new cc.Animation.create();
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick1.png' );
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick2.png' );
-		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick3.png' );
+		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick3.png' );		
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick4.png' );
 		animation.addSpriteFrameWithFile( 'res/images/highattack/highkick5.png' );
-		animation.setDelayPerUnit( 0.1 );
-		return cc.RepeatForever.create( cc.Animate.create( animation ));
+		animation.setDelayPerUnit( 0.05 );
+		return cc.Animate.create( animation );
 	},
 
 	lowAttackMove: function(){
@@ -75,15 +84,19 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick3.png' );
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick4.png' );
 		animation.addSpriteFrameWithFile( 'res/images/lowattack/lowkick5.png' );
-		animation.setDelayPerUnit( 0.1 );
-		return cc.RepeatForever.create( cc.Animate.create( animation ));
+		animation.setDelayPerUnit( 0.05 );
+		return cc.Animate.create( animation );
 	},
 
 	finalMove: function() {
 		var animation = new cc.Animation.create();
-		animation.addSpriteFrameWithFile( 'res/images/final_move.png' );
-		animation.setDelayPerUnit( 0.1 );
-		return cc.RepeatForever.create( cc.Animate.create( animation ));
+		animation.addSpriteFrameWithFile( 'res/images/finalattack/final_move1.png' );
+		animation.addSpriteFrameWithFile( 'res/images/finalattack/final_move2.png' );
+		animation.addSpriteFrameWithFile( 'res/images/finalattack/final_move3.png' );
+		animation.addSpriteFrameWithFile( 'res/images/finalattack/final_move4.png' );
+		animation.addSpriteFrameWithFile( 'res/images/finalattack/final_move5.png' );
+		animation.setDelayPerUnit( 0.05 );
+		return cc.RepeatForever.create( cc.Animate.create( animation ) );
 	}
 });
 

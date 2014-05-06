@@ -36,26 +36,21 @@ var Energy = cc.Sprite.extend( {
 	},
 
 	checkAction: function( player ) {
-		if ( player.movement == Stickman.MOV.ULTIMATE ){
-			return true;
+		if ( this.name == Energy.NAME.ENERGY1 ){
+			return player.direction == Stickman.DIR.LEFT && 
+					player.movement == Stickman.MOV.HIGH
+		}
+		else if ( this.name == Energy.NAME.ENERGY2 ){
+			return player.direction == Stickman.DIR.LEFT && 
+					player.movement == Stickman.MOV.LOW
+		}
+		else if ( this.name == Energy.NAME.ENERGY3 ){
+			return player.direction == Stickman.DIR.RIGHT && 
+					player.movement == Stickman.MOV.HIGH
 		}
 		else {
-			if ( this.name == Energy.NAME.ENERGY1 ){
-				return player.direction == Stickman.DIR.LEFT && 
-						player.movement == Stickman.MOV.HIGH
-			}
-			else if ( this.name == Energy.NAME.ENERGY2 ){
-				return player.direction == Stickman.DIR.LEFT && 
-						player.movement == Stickman.MOV.LOW
-			}
-			else if ( this.name == Energy.NAME.ENERGY3 ){
-				return player.direction == Stickman.DIR.RIGHT && 
-						player.movement == Stickman.MOV.HIGH
-			}
-			else {
-				return player.direction == Stickman.DIR.RIGHT && 
-						player.movement == Stickman.MOV.LOW
-			}
+			return player.direction == Stickman.DIR.RIGHT && 
+					player.movement == Stickman.MOV.LOW
 		}
 	}
 } );
