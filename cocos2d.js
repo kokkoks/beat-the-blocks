@@ -20,7 +20,8 @@
             'src/Gauge.js',
             'src/UltimateBar.js',
             'src/Meat.js',
-            'src/Energy.js'
+            'src/Energy.js',
+            'src/BackGround.js'
         ]
     };
 

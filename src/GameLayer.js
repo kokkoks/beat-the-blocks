@@ -3,16 +3,21 @@ var GameLayer = cc.LayerColor.extend({
         this._super( new cc.Color4B( 127, 127, 127, 255 ) );
         this.setPosition( new cc.Point( 0, 0 ) );
 
-        this.stickman = new Stickman();
-        this.stickman.setPosition(new cc.Point( screenWidth/2, screenHeight/2))
-        this.addChild(this.stickman);
+        this.backgroundPicture = new Background();
+        this.backgroundPicture.setPosition( new cc.Point( screenWidth/2, screenHeight/2 ) );
+        this.addChild( this.backgroundPicture );
 
+        this.stickman = new Stickman();
+        this.stickman.setPosition(new cc.Point( screenWidth/2, screenHeight*1/3))
+        this.addChild( this.stickman );
+    
         this.initLife();
         this.initGauge();
-        this.schedule( this.levelUp, 5 )
+        this.schedule( this.levelUp, 15 )
         this.schedule( this.generateItems, sec);
 
         this.levelLabel = cc.LabelTTF.create( "Level " + level, "Arial", 50 );
+        this.levelLabel.setColor(new cc.Color3B( 0, 0, 0) );
         this.levelLabel.setPosition( new cc.Point( screenWidth/2, screenHeight*3/4 ) );
         this.addChild( this.levelLabel );
         // cc.AudioEngine.getInstance().playEffect( 'res/sound/sound_background.mp3' , true);
@@ -25,10 +30,10 @@ var GameLayer = cc.LayerColor.extend({
 
     levelUp: function() {
 
-        if ( level >= 5) return;
+        if ( level >= 10) return;
         this.getScheduler().unscheduleCallbackForTarget( this, this.generateItems );
         level++;
-        sec -= 0.2;
+        sec -= 0.1;
         this.updateLevelLabel();
         this.schedule( this.generateItems, sec );
     },
@@ -49,46 +54,46 @@ var GameLayer = cc.LayerColor.extend({
 
     manageEnergy: function( randomPos) {
         if ( randomPos == 0 ){
-            this.createEnergy( 0, screenHeight/2 + 20, Energy.NAME.ENERGY1 );
+            this.createEnergy( 0, screenHeight*1/3 + 20, Energy.NAME.ENERGY1 );
         }
         else if ( randomPos == 1 ) {
-            this.createEnergy( 0, screenHeight/2 -50, Energy.NAME.ENERGY2 );
+            this.createEnergy( 0, screenHeight*1/3 -50, Energy.NAME.ENERGY2 );
         }
         else if ( randomPos == 2 ) {
-            this.createEnergy( screenWidth, screenHeight/2 + 20, Energy.NAME.ENERGY3 );
+            this.createEnergy( screenWidth, screenHeight*1/3 + 20, Energy.NAME.ENERGY3 );
         }
         else {
-            this.createEnergy( screenWidth, screenHeight/2 - 50, Energy.NAME.ENERGY4 );
+            this.createEnergy( screenWidth, screenHeight*1/3 - 50, Energy.NAME.ENERGY4 );
         }
     }, 
 
     manageBlock: function( randomPos ) {
         if ( randomPos == 0 ) {
-            this.createBlock( 0, screenHeight/2 + 20, Block.NAME.BLOCK1 );
+            this.createBlock( 0, screenHeight*1/3 + 20, Block.NAME.BLOCK1 );
         }
         else if ( randomPos == 1 ) {
-            this.createBlock( 0, screenHeight/2 -50, Block.NAME.BLOCK2 );
+            this.createBlock( 0, screenHeight*1/3 -50, Block.NAME.BLOCK2 );
         }
         else if ( randomPos == 2 ) {
-            this.createBlock( screenWidth, screenHeight/2 + 20, Block.NAME.BLOCK3 );
+            this.createBlock( screenWidth, screenHeight*1/3 + 20, Block.NAME.BLOCK3 );
         }
         else {
-            this.createBlock( screenWidth, screenHeight/2 - 50, Block.NAME.BLOCK4 );
+            this.createBlock( screenWidth, screenHeight*1/3 - 50, Block.NAME.BLOCK4 );
         }
     }, 
 
     manageMeat: function( randomPos ) {
         if ( randomPos == 0 ){
-            this.createMeat( 0, screenHeight/2 + 20, Meat.NAME.MEAT1 );
+            this.createMeat( 0, screenHeight*1/3 + 20, Meat.NAME.MEAT1 );
         }
         else if ( randomPos == 1 ) {
-            this.createMeat( 0, screenHeight/2 -50, Meat.NAME.MEAT2 );
+            this.createMeat( 0, screenHeight*1/3 -50, Meat.NAME.MEAT2 );
         }
         else if ( randomPos == 2 ) {
-            this.createMeat( screenWidth, screenHeight/2 + 20, Meat.NAME.MEAT3 );
+            this.createMeat( screenWidth, screenHeight*1/3 + 20, Meat.NAME.MEAT3 );
         }
         else {
-            this.createMeat( screenWidth, screenHeight/2 - 50, Meat.NAME.MEAT4 );
+            this.createMeat( screenWidth, screenHeight*1/3 - 50, Meat.NAME.MEAT4 );
         }
     }, 
 
@@ -264,24 +269,23 @@ var GameLayer = cc.LayerColor.extend({
                     this.removeBlock( i );
                 }
                 else {
+                    this.decreaseLife( 1 );
+                    this.removeBlock( i );
+                    cc.AudioEngine.getInstance().playEffect( 'res/sound/hurt.wav' );
+
                     if ( life == 0 ) {
-                        this.endGame();
+                        setTimeout(function() 
+                        {
+                            confirm( ' YOU LOSE !' )
+                                location.reload(); 
+                        } ,10 );
                     }
-                    else {
-                        this.decreaseLife( 1 );
-                        this.removeBlock( i );
-                    }
-                    // this.endGame();
                 }
             }
         }
     },
 
-    endGame: function() {
-        if( confirm( ' YOU LOSE !' ) ) {
-            location.reload();
-        }
-    },
+    
 
     onKeyDown: function( e ) {
         if ( keyPressed == false ) {
