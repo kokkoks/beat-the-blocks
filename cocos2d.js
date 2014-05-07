@@ -22,7 +22,9 @@
             'src/Meat.js',
             'src/Energy.js',
             'src/BackGround.js',
-            'src/Board'
+            'src/Board.js',
+            'src/StartLayer.js',
+            'src/resource.js'
         ]
     };
 

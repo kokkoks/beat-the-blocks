@@ -162,7 +162,6 @@ var GameLayer = cc.LayerColor.extend({
                 this.heart.setPosition( new cc.Point( i * 55 + 30, screenHeight - 30 ) );
                 this.addChild( this.heart );
                 lifes.push( this.heart );
-                console.log( i )
             }
         life += quantity;
         }
@@ -278,18 +277,21 @@ var GameLayer = cc.LayerColor.extend({
                     cc.AudioEngine.getInstance().playEffect( 'res/sound/hurt.wav' );
 
                     if ( life == 0 ) {
-                        setTimeout(function() 
-                        {
-                            confirm( ' YOU LOSE !' )
-                                location.reload(); 
-                        } ,10 );
+                        this.endGame();
                     }
                 }
             }
         }
     },
 
-    
+    endGame: function() {
+        cc.AudioEngine.getInstance().stopMusic();
+        setTimeout(function() 
+            {
+                confirm( ' YOU LOSE !' );
+                location.reload(); 
+            } ,10 );
+    },
 
     onKeyDown: function( e ) {
         if ( keyPressed == false ) {
@@ -353,6 +355,6 @@ var energys = [];
 var blocks = [];
 var ulti = 0;
 var life  = 5;
-var sec = 1.2;
+var sec = 1.1;
 var level = 1;
 var keyPressed = false;
