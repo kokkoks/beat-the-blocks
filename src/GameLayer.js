@@ -252,9 +252,6 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
 
-    setKeyBoard: function() {
-    },
-
     endGame: function() {
         cc.AudioEngine.getInstance().stopMusic();
         setTimeout(function() 
@@ -262,6 +259,12 @@ var GameLayer = cc.LayerColor.extend({
                 confirm( ' YOU LOSE !' );
                 location.reload(); 
             } ,10 );
+    },
+
+    checkStage: function() {
+        if( this.stickman.movement != Stickman.MOV.ULTIMATE ) {
+             this.stickman.createMovement( Stickman.MOV.STILL );
+        }   
     },
 
     onKeyDown: function( e ) {
@@ -279,16 +282,14 @@ var GameLayer = cc.LayerColor.extend({
                     break;
                 case cc.KEY.x:
                     if ( this.stickman.movement != Stickman.MOV.HIGH ) {
-                        this.scheduleOnce( function(){ 
-                        this.stickman.createMovement( Stickman.MOV.STILL ) }, 0.25 );
+                        this.scheduleOnce( function(){ this.checkStage() }, 0.25 );
                         this.stickman.createMovement( Stickman.MOV.HIGH );
                         this.keyPressed = true;
                     }
                     break;
                 case cc.KEY.c:
                     if ( this.stickman.movement != Stickman.MOV.LOW ) {
-                        this.scheduleOnce( function(){ 
-                        this.stickman.createMovement( Stickman.MOV.STILL ) }, 0.25 );
+                        this.scheduleOnce( function(){ this.checkStage() }, 0.25 );
                         this.stickman.createMovement( Stickman.MOV.LOW );
                         this.keyPressed = true;
                     }
