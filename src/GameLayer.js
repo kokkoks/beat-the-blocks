@@ -8,9 +8,11 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.backgroundPicture );
 
         this.stickman = new Stickman();
-        this.stickman.setPosition(new cc.Point( screenWidth/2, screenHeight*1/3))
+        this.stickman.setPosition(new cc.Point( screenWidth/2, screenHeight*1/3 ) );
         this.addChild( this.stickman );
 
+        this.hurt = new Hurt();
+        this.hurt.setPosition( new cc.Point( screenWidth/2, screenHeight/2 ) );
         this.initLife();
         this.initGauge();
         this.schedule( this.levelUp, 15 )
@@ -232,11 +234,17 @@ var GameLayer = cc.LayerColor.extend({
                     this.removeBlock( i );
                 }
                 else {
-                    this.decreaseLife( 1 );
-                    this.removeBlock( i );
-                    cc.AudioEngine.getInstance().playEffect( 'res/sound/hurt.wav' );
-
-                    if ( life == 0 ) {
+                    if ( life > 1) {
+                        this.addChild( this.hurt );
+                        this.scheduleOnce( function(){
+                        this.removeChild( this.hurt ) }, 0.05 );
+                        this.decreaseLife( 1 );
+                        this.removeBlock( i );
+                        cc.AudioEngine.getInstance().playEffect( 'res/sound/hurt.wav' );
+                    }
+                    else
+                    {    
+                        cc.AudioEngine.getInstance().playEffect( 'res/sound/hurt.wav' );
                         this.endGame();
                     }
                 }

@@ -23,7 +23,8 @@
             'src/Board.js',
             'src/StartLayer.js',
             'src/resource.js',
-            'src/AdapterNumber.js'
+            'src/AdapterNumber.js',
+            'src/Hurt.js'
         ]
     };
 

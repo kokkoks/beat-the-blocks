@@ -98,7 +98,7 @@ var Stickman = cc.Sprite.extend({
 		animation.addSpriteFrameWithFile( 'res/images/finalattack/final_move5.png' );
 		animation.setDelayPerUnit( 0.05 );
 		return cc.RepeatForever.create( cc.Animate.create( animation ) );
-	}
+	},
 });
 
 Stickman.DIR = {
