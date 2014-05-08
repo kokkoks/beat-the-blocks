@@ -16,6 +16,8 @@ var GameLayer = cc.LayerColor.extend({
         this.schedule( this.levelUp, 15 )
         this.schedule( this.generateItems, sec);
 
+        this.adapter = new AdapterNumber();
+
         this.levelLabel = cc.LabelTTF.create( "Level " + level, "Arial", 50 );
         this.levelLabel.setColor(new cc.Color3B( 0, 0, 0) );
         this.levelLabel.setPosition( new cc.Point( screenWidth/2, screenHeight*3/4 ) );
@@ -43,86 +45,44 @@ var GameLayer = cc.LayerColor.extend({
         var randomPos = Math.floor( Math.random() * 4 );
         var randomItem = Math.floor( Math.random() * 6 );
 
-        if ( randomItem == 1){
-            this.manageMeat( randomPos );
+        var item;
+        var array;
+        if (randomItem == 0)
+        {
+            item = new Item("res/images/meat.png");
+            array = meats;
         }
-        else if ( randomItem == 2 ) {
-            this.manageEnergy( randomPos );
+        else if (randomItem == 1)
+        {
+            item = new Item("res/images/energy.png");
+            array = energys;
         }
-        else this.manageBlock( randomPos );
+        else
+        {
+            item = new Item("res/images/stone.png");
+            array = blocks;
+        }
+            this.manageItem( randomPos, item, array);
     }, 
 
-    manageMeat: function( randomPos ) {
-        if ( randomPos == 0 ){
-            this.createMeat( 0, screenHeight*1/3 + 20, Meat.NAME.MEAT1 );
-        }
-        else if ( randomPos == 1 ) {
-            this.createMeat( 0, screenHeight*1/3 -50, Meat.NAME.MEAT2 );
-        }
-        else if ( randomPos == 2 ) {
-            this.createMeat( screenWidth, screenHeight*1/3 + 20, Meat.NAME.MEAT3 );
-        }
-        else {
-            this.createMeat( screenWidth, screenHeight*1/3 - 50, Meat.NAME.MEAT4 );
-        }
+
+    manageItem: function( randomPos, item, array ) {
+        var positionX = this.adapter.adaptNumberToWidth(randomPos);
+        var positionY = this.adapter.adaptNumberToHeight(randomPos);
+        var direction = this.adapter.adaptNumberToDirection(randomPos);
+        var level = this.adapter.adaptNumberToLevel(randomPos);
+
+        this.createItem( item, array, positionX, positionY, direction, level );
     },
 
-    manageEnergy: function( randomPos) {
-        if ( randomPos == 0 ){
-            this.createEnergy( 0, screenHeight*1/3 + 20, Energy.NAME.ENERGY1 );
-        }
-        else if ( randomPos == 1 ) {
-            this.createEnergy( 0, screenHeight*1/3 -50, Energy.NAME.ENERGY2 );
-        }
-        else if ( randomPos == 2 ) {
-            this.createEnergy( screenWidth, screenHeight*1/3 + 20, Energy.NAME.ENERGY3 );
-        }
-        else {
-            this.createEnergy( screenWidth, screenHeight*1/3 - 50, Energy.NAME.ENERGY4 );
-        }
+    createItem: function( item, array, positionX, positionY, direction, level) {
+        item.setPosition( new cc.Point( positionX, positionY ) );
+        this.addChild( item );
+        array.push( item );
+        item.setDirection( direction );
+        item.setLevel ( level );
+        item.scheduleUpdate();
     },
-
-    manageBlock: function( randomPos ) {
-        if ( randomPos == 0 ) {
-            this.createBlock( 0, screenHeight*1/3 + 20, Block.NAME.BLOCK1 );
-        }
-        else if ( randomPos == 1 ) {
-            this.createBlock( 0, screenHeight*1/3 -50, Block.NAME.BLOCK2 );
-        }
-        else if ( randomPos == 2 ) {
-            this.createBlock( screenWidth, screenHeight*1/3 + 20, Block.NAME.BLOCK3 );
-        }
-        else {
-            this.createBlock( screenWidth, screenHeight*1/3 - 50, Block.NAME.BLOCK4 );
-        }
-    }, 
-
-    createMeat: function( positionX, positionY, name) {
-        this.meat = new Meat();
-        this.meat.setPosition( new cc.Point( positionX, positionY ) );
-        this.addChild( this.meat );
-        meats.push( this.meat );
-        this.meat.setName( name );
-        this.meat.scheduleUpdate();
-    },
-
-    createEnergy: function( positionX, positionY, name) {
-        this.energy = new Energy();
-        this.energy.setPosition( new cc.Point( positionX, positionY ) );
-        this.addChild( this.energy );
-        energys.push( this.energy );
-        this.energy.setName( name );
-        this.energy.scheduleUpdate();
-    }, 
-
-    createBlock: function( positionX, positionY, name) {
-        this.block = new Block();
-        this.block.setPosition( new cc.Point( positionX, positionY ) );
-        this.addChild( this.block );
-        blocks.push( this.block );
-        this.block.setName( name );
-        this.block.scheduleUpdate();
-    }, 
 
      
 
@@ -245,9 +205,9 @@ var GameLayer = cc.LayerColor.extend({
 
     checkMeat: function( distance ){
         for ( var i = 0; i < meats.length; i++ ){
-            if ( meats[i].getPositionX() < 0 || meats[i].getPositionX() > screenWidth ) {
-                this.removeMeat( i );
-            }
+            // if ( meats[i].getPositionX() < 0 || meats[i].getPositionX() > screenWidth ) {
+            //     this.removeMeat( i );
+            // }
             if ( meats[i].hit( this.stickman, distance ) ){
                 if ( meats[i].checkAction( this.stickman ) ) {
                     cc.AudioEngine.getInstance().playEffect( 'res/sound/eat.mp3' );
@@ -327,7 +287,6 @@ var GameLayer = cc.LayerColor.extend({
                     break;
                 case cc.KEY.z:
                     if ( ulti == 5 ) {
-                        if ( this.stickman.movement != Stickman.MOV.ULTIMATE ) {
                         this.setKeyboardEnabled( false );
                         this.scheduleOnce( function(){
                             this.setKeyboardEnabled( true ) }, 3 );
@@ -335,9 +294,19 @@ var GameLayer = cc.LayerColor.extend({
                             this.stickman.createMovement( Stickman.MOV.STILL ) }, 3 );
                         this.stickman.createMovement( Stickman.MOV.ULTIMATE );
                         this.keyPressed = true;
-                        }
                     this.decreaseGauge();
                     }
+                    break;
+                case cc.KEY.o:
+                        this.setKeyboardEnabled( false );
+                        this.scheduleOnce( function(){
+                            this.setKeyboardEnabled( true ) }, 3 );
+                        this.scheduleOnce( function(){ 
+                            this.stickman.createMovement( Stickman.MOV.STILL ) }, 3 );
+                        this.stickman.createMovement( Stickman.MOV.ULTIMATE );
+                        this.keyPressed = true;
+                    this.decreaseGauge();
+                    
                     break;
             }
         }

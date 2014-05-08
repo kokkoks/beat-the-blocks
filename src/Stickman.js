@@ -27,6 +27,8 @@ var Stickman = cc.Sprite.extend({
 	},
 
 	createMovement: function( mov ) {
+		if ( this.movement == Stickman.MOV.ULTIMATE)
+			return ;
 		this.setMovement( mov );
 		this.attackMove( mov );
 	},
@@ -48,6 +50,7 @@ var Stickman = cc.Sprite.extend({
 
 	attackMove: function( movement ) {
 		this.stopAllActions();
+
 		if ( movement == Stickman.MOV.HIGH ){
 			this.movingAction = this.highAttackMove();
 			this.runAction( this.movingAction );
