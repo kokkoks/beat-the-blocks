@@ -284,6 +284,9 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
 
+    setKeyBoard: function() {
+    },
+
     endGame: function() {
         cc.AudioEngine.getInstance().stopMusic();
         setTimeout(function() 
@@ -325,8 +328,11 @@ var GameLayer = cc.LayerColor.extend({
                 case cc.KEY.z:
                     if ( ulti == 5 ) {
                         if ( this.stickman.movement != Stickman.MOV.ULTIMATE ) {
+                        this.setKeyboardEnabled( false );
+                        this.scheduleOnce( function(){
+                            this.setKeyboardEnabled( true ) }, 3 );
                         this.scheduleOnce( function(){ 
-                        this.stickman.createMovement( Stickman.MOV.STILL ) }, 3 );
+                            this.stickman.createMovement( Stickman.MOV.STILL ) }, 3 );
                         this.stickman.createMovement( Stickman.MOV.ULTIMATE );
                         this.keyPressed = true;
                         }
